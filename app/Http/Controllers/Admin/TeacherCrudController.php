@@ -41,7 +41,6 @@ class TeacherCrudController extends CrudController
         CRUD::setRoute(config('backpack.base.route_prefix') . '/teacher');
         CRUD::setEntityNameStrings('teacher', 'teachers');
         $this->crud->addButtonFromView('top', 'import', 'import', 'end');
-        $this->crud->addButtonFromModelFunction('top', 'create_user', 'createUser', 'beginning');
         $this->contactRepo = resolve(ContactRepositories::class);
     }
 
@@ -141,7 +140,7 @@ class TeacherCrudController extends CrudController
             'name' => 'DateOfBirth',
             'lable' => 'DateOfBirth',
             'type'  => 'date',
-            'format' => 'Y-MM-DD'
+            'format' => 'DD/MM/YYYY'
         ]);
 
         // CRUD::addColumn([
@@ -406,7 +405,7 @@ class TeacherCrudController extends CrudController
         $this->crud->addField([
 
             'name'  => 'DateOfBirth',
-            'label' => 'Birthday',
+            'label' => 'Date Of Birth',
             'type'  => 'date',
             'tab'      => 'TeacherProfile',
             'wrapper' => [

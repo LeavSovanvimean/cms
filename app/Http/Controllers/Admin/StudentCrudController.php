@@ -118,21 +118,6 @@ class StudentCrudController extends CrudController
             'label'        => 'Group',
         ]);
 
-        // $this->crud->addColumn(
-        //     [
-        //         'label'     => "Subject",
-        //         'type'      => 'select_multiple',
-        //         'name'      => 'subject',
-        //         'entity'    => 'subject',
-        //         'model'     => "App\Models\Subject",
-        //         'attribute' => 'subjectName',
-        //         'pivot'     => true,
-        //         'options'   => (function ($query) {
-        //             return $query->orderBy('subjectName', 'ASC')->get();
-        //         }),
-        //     ],
-        // );
-
         $this->crud->addColumn([
             'name' => 'address',
             'type' => 'text',
@@ -190,12 +175,10 @@ class StudentCrudController extends CrudController
             }
         ]);
 
-
-        /**
-         * Columns can be defined using the fluent syntax or array syntax:
-         * - CRUD::column('price')->type('number');
-         * - CRUD::addColumn(['name' => 'price', 'type' => 'number']);
-         */
+        if(backpack_user()->hasPermissionTo('View')) {
+            $this->crud->denyAccess(['create', 'update', 'delete']);
+            $this->crud->disableBulkActions();
+        }
     }
 
     /**
@@ -216,24 +199,6 @@ class StudentCrudController extends CrudController
                 'class' => 'form-group col-md-6'
             ]
         ]);
-
-        // CRUD::addField([
-        //     'label'       => "Subject",
-        //     'type'        => "select2_from_ajax_multiple",
-        //     'name'        => 'subject',
-        //     'entity'      => 'subject',
-        //     'attribute'   => "subjectName",
-        //     'data_source' => url("admin/student/fetch/student-name"),
-        //     'placeholder'             => "Select a subject",
-        //     'minimum_input_length'    => 1,
-        //     'model' => 'App\Models\Subject',
-        //     // 'dependencies'            => ['subject'],
-        //     'method'                  => 'POST',
-        //     'include_all_form_fields' => false,
-        //     'wrapper' => [
-        //         'class' => 'form-group col-md-6'
-        //     ]
-        // ]);
 
         $this->crud->addField([
             'label' => "Address",

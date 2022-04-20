@@ -67,14 +67,14 @@ class SubjectCrudController extends CrudController
             'searchLogic' => false,
             'orderable' => false,
             'visibleInModal' => false,
-        ])->makeFirstColumn();
+        ]);
 
+        $this->crud->orderBy('id', 'ASC');
         $this->crud->addColumn([
-            'name'      => 'row_number',
-            'type'      => 'row_number',
-            'label'     => '#',
-            'orderable' => false,
-        ])->makeFirstColumn();
+            'name' => "id",
+            'label' => "ID",
+            'type' => "text",
+         ])->makeFirstColumn();
 
 
 
@@ -90,10 +90,60 @@ class SubjectCrudController extends CrudController
         );
 
         $this->crud->addColumn([
-            'name'         => 'teacher', // name of relationship method in the model
-            'type'         => 'relationship',
-            'label'        => 'Teacher',
+            'name' => 'code',
+            'type' => 'text',
+            'labal' => 'Code'
         ]);
+
+        $this->crud->addColumn([
+            'name' => 'subjectName',
+            'type' => 'text',
+            'labal' => 'SubjectName'
+        ]);
+
+        $this->crud->addColumn([
+            'name' => "Teachers",
+            'label' => "Teachers", // Table column heading
+            'type' => "model_function",
+            'function_name' => 'teacherCount', // the method in your Model
+         ]);
+
+    }
+
+    /**
+     * Define what happens when the Create operation is loaded.
+     *
+     * @see https://backpackforlaravel.com/docs/crud-operation-create
+     * @return void
+     */
+    protected function setupCreateOperation()
+    {
+        CRUD::setValidation(SubjectRequest::class);
+
+        CRUD::field('code');
+
+        CRUD::field('subjectName');
+
+        CRUD::addField([
+            'label'         => "Teacher",
+            'type'          => "select2_multiple",
+            'name'          => 'teacher',
+            'placeholder'   => "Select a Teacher",
+            'model'         => 'App\Models\Teacher',
+            'pivot'     => true,
+        ]);
+
+    }
+
+    protected function setupShowOperation()
+    {
+
+        $this->crud->orderBy('id', 'ASC');
+        $this->crud->addColumn([
+            'name' => "id",
+            'label' => "ID",
+            'type' => "text",
+         ])->makeFirstColumn();
 
         $this->crud->addColumn([
             'name' => 'code',
@@ -107,124 +157,18 @@ class SubjectCrudController extends CrudController
             'labal' => 'SubjectName'
         ]);
 
-
-
         $this->crud->addColumn([
-            'name' => 'created_at',
-            'lable' => 'Date',
-            'type'  => 'date',
-            'format' => 'Y-MM-DD'
-        ]);
+            'name' => "Teachers",
+            'label' => "Total Teachers", // Table column heading
+            'type' => "model_function",
+            'function_name' => 'teacherCount', // the method in your Model
+         ]);
 
-        $this->crud->addColumn([
-            'name' => 'updated_at',
-            'lable' => 'Date',
-            'type'  => 'date',
-            'format' => 'Y-MM-DD'
-        ]);
-
-        $this->crud->addFilter(
-            [
-                'type'  => 'date',
-                'name'  => 'created_at',
-                'label' => 'Create_Date'
-            ],
-
-            false,
-            function ($value) {
-                $this->crud->addClause('whereDate', 'created_at', $value);
-            }
-        );
-
-        $this->crud->addFilter(
-            [
-                'type'  => 'date',
-                'name'  => 'updated_at',
-                'label' => 'Updata_Date'
-            ],
-            false,
-            function ($value) {
-                $this->crud->addClause('whereDate', 'updated_at', $value);
-            }
-        );
-        $this->crud->addColumn([
-            'type' => 'relationship',
-            'name' => 'createdBy',
-            'label' => 'Created By',
-            'attribute' => 'name',
-            'entity'    => 'createdBy',
-
-            'searchLogic' => function ($query, $column, $searchTerm) {
-                $query->orWhereHas('createdBy', function ($q) use ($column, $searchTerm) {
-                    $q->where($column['attribute'], 'like', '%' . $searchTerm . '%')
-                        ->orWhereDate('created_at', '=', date($searchTerm));
-                });
-            },
-
-            'function'  => function ($entry) {
-                return optional($entry->createBy)->name;
-            }
-
-        ]);
-
-        $this->crud->addColumn([
-            'type' => 'relationship',
-            'name' => 'updatedBy',
-            'label' => 'updated By',
-            'attribute' => 'name',
-            'entity'    => 'updatedBy',
-            'function'  => function ($entry) {
-                return optional($entry->createBy)->name;
-            }
-        ]);
-
-
-
-        // CRUD::column('updated_at');
-
-        /**
-         * Columns can be defined using the fluent syntax or array syntax:
-         * - CRUD::column('price')->type('number');
-         * - CRUD::addColumn(['name' => 'price', 'type' => 'number']);
-         */
-    }
-
-    /**
-     * Define what happens when the Create operation is loaded.
-     *
-     * @see https://backpackforlaravel.com/docs/crud-operation-create
-     * @return void
-     */
-    protected function setupCreateOperation()
-    {
-        CRUD::setValidation(SubjectRequest::class);
-        // CRUD::field('id');
-        CRUD::field('code');
-        // CRUD::field('teacher');
-        CRUD::addField([
-            'label'       => "Teacher",
-            'type'        => "select2_from_ajax",
-            'name'        => 'teacher',
-            'entity'      => 'teacher',
-            'attribute'   => "name",
-            'data_source' => url("api/teacher"),
-            'placeholder'             => "Select a teacher",
-            'minimum_input_length'    => 1,
-            'model' => 'App\Models\Teacher',
-            'method'                  => 'GET',
-            'include_all_form_fields' => false,
-        ]);
-
-        CRUD::field('subjectName');
-
-        // CRUD::field('created_at');
-        // CRUD::field('updated_at');
-
-        /**
-         * Fields can be defined using the fluent syntax or array syntax:
-         * - CRUD::field('price')->type('number');
-         * - CRUD::addField(['name' => 'price', 'type' => 'number']));
-         */
+         $this->crud->addColumn([
+            'name'  => 'teacher',
+            'label' => 'Name',
+            'type'  => 'relationship',
+         ]);
     }
 
     public function store()

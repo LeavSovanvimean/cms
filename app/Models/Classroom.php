@@ -7,7 +7,6 @@ use Intervention\Image\ImageManagerStatic as Image;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 use Backpack\CRUD\app\Models\Traits\CrudTrait;
-
 class Classroom extends Model
 {
     use CrudTrait;
@@ -22,7 +21,7 @@ class Classroom extends Model
     // protected $primaryKey = 'id';
     // public $timestamps = false;
     protected $guarded = ['id'];
-    protected $fillable = ['id',  'group_id', 'image', 'created_by', 'updated_by', 'created_at', 'updated_at'];
+    protected $fillable = ['id',  'group_id', 'image','start_date','end_date','description', 'created_by', 'updated_by', 'created_at', 'updated_at'];
     // protected $hidden = [];
     // protected $dates = [];
 
@@ -58,9 +57,13 @@ class Classroom extends Model
 
     public function Group()
     {
-        return $this->belongsTo('App\Models\Group', 'group_id', 'id');
+        return $this->belongsTo('Modules\Group\Entities\Group', 'group_id', 'id');
     }
 
+    public function getYear()
+    {
+        return $this->belongTo('Modules\Group\Entities\Group','group_id','Year');
+    }
 
     // public function Group()
     // {

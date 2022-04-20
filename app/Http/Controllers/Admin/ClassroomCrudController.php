@@ -49,21 +49,62 @@ class ClassroomCrudController extends CrudController
 
     protected function setupListOperation()
     {
+        $this->crud->orderBy('id', 'ASC');
         $this->crud->addColumn([
-            'name'      => 'image', // The db column name
-            'label'     => 'Profile', // Table column heading
-            'type'      => 'image',
-            // 'prefix' => '/storage/',
-            'height' => '70px',
-            'width'  => '50px'
-        ]);
+            'name' => "id",
+            'label' => "ID",
+            'type' => "text",
+         ])->makeFirstColumn();
 
         $this->crud->addColumn([
             'name'         => 'group',
             'type'         => 'relationship',
             'label'        => 'Group',
         ]);
+
+        $this->crud->addColumn([
+            'label'     => "Start Date",
+            'type'      => 'date',
+            'name'      => 'start_date',
+            'format' => 'DD/MM/YYYY',
+        ]);
+
+        $this->crud->addColumn([
+            'label'     => "End Date",
+            'type'      => 'date',
+            'name'      => 'end_date',
+            'format' => 'DD/MM/YYYY',
+        ]);
+
+        $this->crud->addColumn([
+            'label'     => "Description",
+            'type'      => 'text',
+            'name'      => 'description',
+        ]);
+
+        $this->crud->addColumn([
+            'name'      => 'image', // The db column name
+            'label'     => 'Schedule', // Table column heading
+            'type'      => 'image',
+            // 'prefix' => '/storage/',
+            'height' => '70px',
+            'width'  => '50px'
+        ]);
+
+        if(backpack_user()->hasPermissionTo('View'))
+        {
+            $this->crud->denyAccess(['create', 'update', 'delete']);
+            $this->crud->disableBulkActions();
+        }
+        elseif(backpack_user()->hasPermissionTo('Full Control'))
+        {
+            $this->crud->AllowAccess(['add','create', 'update', 'delete']);
+            $this->crud->enableBulkActions();
+        }
+
     }
+
+
 
     /**
      * Define what happens when the Create operation is loaded.
@@ -85,12 +126,30 @@ class ClassroomCrudController extends CrudController
         ]);
 
         $this->crud->addField([
+
+            'name'  => ['start_date','end_date'],
+            'label' => 'Event Date Range',
+            'type'  => 'date_range',
+            'default' => ['2022-04-9 01:01', '2022-04-10 02:00'],
+            'date_range_options' =>
+            [
+                'drops' => 'auto',
+                'timePicker' => true,
+                'locale' => ['format' => 'DD/MM/YYYY HH:mm ']
+            ]
+        ]);
+
+        $this->crud->addField([
+            'label'     => "Description",
+            'type'      => 'text',
+            'name'      => 'description'
+        ]);
+
+        $this->crud->addField([
             'label' => "Schedule Image",
             'name' => "image",
             'type' => 'image',
             'crop' => true,
-            // 'aspect_ratio' => 3,
-            // 'prefix'    => '/uploads/images',
         ]);
     }
 

@@ -34,10 +34,6 @@ class Subject extends Model
     | RELATIONS
     |--------------------------------------------------------------------------
     */
-    public function teacher()
-    {
-        return $this->belongsTo('App\Models\Teacher', 'user_id');
-    }
 
     public function schedule()
     {
@@ -56,6 +52,17 @@ class Subject extends Model
     public function updatedBy(){
         return $this->belongsTo(User::class , 'updated_by' , 'id');
     }
+
+    public function teacher()
+    {
+        return $this->belongsToMany('App\Models\Teacher');
+    }
+
+    public function teacherCount()
+    {
+        return $this->teacher()->count();
+    }
+
     /*
     |--------------------------------------------------------------------------
     | SCOPES

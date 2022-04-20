@@ -17,6 +17,9 @@ class CreateClassroomsTable extends Migration
             $table->id();
             $table->string('group_id');
             $table->text('image');
+            $table->dateTime('start_date');
+            $table->dateTime('end_date');
+            $table->text('description')->nullable();
             $table->integer('created_by')->nullable();
             $table->integer('updated_by')->nullable();
             $table->timestamps();

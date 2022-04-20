@@ -11,6 +11,7 @@ use Laravel\Sanctum\HasApiTokens;
 use Backpack\CRUD\app\Models\Traits\CrudTrait;
 use Spatie\Permission\Traits\HasRoles;
 use App\Models\Student;
+use App\Models\Teacher;
 
 class User extends Authenticatable
 {
@@ -25,6 +26,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'teacher_id'
     ];
 
     /**
@@ -46,9 +48,8 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function getName()
+    public function teacher()
     {
-        return $this->belongsTo('App\Models\Student','student_id','id');
+        return $this->belongsTo(Teacher::Class,'teacher_id','id');
     }
-
 }

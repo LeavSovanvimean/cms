@@ -5,6 +5,7 @@ use Backpack\CRUD\app\Models\Traits\CrudTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use App\Models\Student;
+use App\Models\Teacher;
 class Group extends Model
 {
     use CrudTrait;
@@ -19,7 +20,7 @@ class Group extends Model
     // protected $primaryKey = 'id';
     // public $timestamps = false;
     protected $guarded = ['id'];
-    protected $fillable = ['id' , 'group_name'];
+    protected $fillable = ['id','group_name','year','semester'];
     // protected $hidden = [];
     // protected $dates = [];
 
@@ -49,7 +50,23 @@ class Group extends Model
     {
         return $this->getStudents()->where('status','Open')->count();
     }
-    /*
+
+    public function classroom()
+    {
+        return $this->belongsTo('App\Models\Classroom','group_id','id');
+    }
+
+    public function teacher()
+    {
+        return $this->belongsToMany(Teacher::Class);
+    }
+
+    public function teacherCount()
+    {
+        return $this->teacher()->count();
+    }
+
+     /*
     |--------------------------------------------------------------------------
     | SCOPES
     |--------------------------------------------------------------------------

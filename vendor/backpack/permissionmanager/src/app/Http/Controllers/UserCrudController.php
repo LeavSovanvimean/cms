@@ -34,6 +34,11 @@ class UserCrudController extends CrudController
                 'label' => trans('backpack::permissionmanager.email'),
                 'type'  => 'email',
             ],
+            [
+                'name'  => 'teacher',
+                'label' => 'Belong To',
+                'type'  => 'relationship',
+            ],
             [ // n-n relationship (with pivot table)
                 'label'     => trans('backpack::permissionmanager.roles'), // Table column heading
                 'type'      => 'select_multiple',
@@ -147,16 +152,16 @@ class UserCrudController extends CrudController
     {
         $this->crud->addFields([
             [
-
-                'label'     => "Name",
-                'type'      => 'select2',
-                'name'      => 'Name',
-                'entity'   => 'getName', //Point to method defines in model
-                'attribute' => 'name', //Show to user
-
-                // 'name'  => 'name',
-                // 'label' => trans('backpack::permissionmanager.name'),
-                // 'type'  => 'text',
+                'name'  => 'name',
+                'label' => trans('backpack::permissionmanager.name'),
+                'type'  => 'text',
+            ],
+            [
+                'label'         => "Belong To",
+                'type'          => "select2",
+                'name'          => 'teacher',
+                'placeholder'   => "Select a Teacher",
+                'model'         => 'App\Models\Teacher',
             ],
             [
                 'name'  => 'email',

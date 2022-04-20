@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Backpack\CRUD\app\Models\Traits\CrudTrait;
 use Illuminate\Database\Eloquent\Model;
-
+use Modules\Group\Entities\Group;
 class Teacher extends Model
 {
     use CrudTrait;
@@ -52,6 +52,17 @@ class Teacher extends Model
     {
         return $this->belongsTo(User::class, 'updated_by', 'id');
     }
+
+    public function group()
+    {
+        return $this->belongsToMany(Group::class, 'group_teacher', 'group_id', 'teacher_id');
+    }
+
+    public function subject()
+    {
+        return $this->belongsToMany(Subject::class, 'subject_teacher', 'subject_id', 'teacher_id');
+    }
+
     /*
     |--------------------------------------------------------------------------
     | SCOPES
